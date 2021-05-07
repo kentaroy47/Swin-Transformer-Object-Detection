@@ -58,7 +58,7 @@ def save_checkpoint(model, filename, optimizer=None, meta=None):
     try:
         checkpoint['amp'] = apex.amp.state_dict()
     except:
-        continue
+        pass
 
     if filename.startswith('pavi://'):
         try:
