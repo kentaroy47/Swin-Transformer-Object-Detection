@@ -144,9 +144,12 @@ class EvalHook(Hook):
             return
         from mmdet.apis import single_gpu_test
         results = single_gpu_test(runner.model, self.dataloader, show=False)
-        key_score = self.evaluate(runner, results)
-        if self.save_best:
-            self.save_best_checkpoint(runner, key_score)
+        try:
+          key_score = self.evaluate(runner, results)
+          if self.save_best:
+              self.save_best_checkpoint(runner, key_score)
+        except:
+          print("eval failed")
 
     def after_train_iter(self, runner):
         if self.by_epoch or not self.every_n_iters(runner, self.interval):
