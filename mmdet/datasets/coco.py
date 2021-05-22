@@ -240,7 +240,7 @@ class CocoDataset(CustomDataset):
         for idx in range(len(self)):
             img_id = self.img_ids[idx]
             det, seg = results[idx]
-            seg_results.append(seg)
+            seg_results.append({"box":det, "seg":seg})
             for label in range(len(det)):
                 # bbox results
                 bboxes = det[label]
