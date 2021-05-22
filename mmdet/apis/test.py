@@ -10,14 +10,15 @@ import torch.distributed as dist
 from mmcv.image import tensor2imgs
 from mmcv.runner import get_dist_info
 
-from mmdet.core import encode_mask_results
+from mmdet.core import encode_mask_results, raw_mask_results
 
 
 def single_gpu_test(model,
                     data_loader,
                     show=False,
                     out_dir=None,
-                    show_score_thr=0.3):
+                    show_score_thr=0.3,
+                    logits=False):
     model.eval()
     results = []
     dataset = data_loader.dataset
@@ -56,9 +57,14 @@ def single_gpu_test(model,
                     score_thr=show_score_thr)
 
         # encode mask results
-        if isinstance(result[0], tuple):
-            result = [(bbox_results, encode_mask_results(mask_results))
-                      for bbox_results, mask_results in result]
+        if not logits:
+          if isinstance(result[0], tuple):
+              result = [(bbox_results, encode_mask_results(mask_results))
+                        for bbox_results, mask_results in result]
+        else:
+          if isinstance(result[0], tuple):
+              result = [(bbox_results, raw_mask_results(mask_results))
+                        for bbox_results, mask_results in result]
         results.extend(result)
 
         for _ in range(batch_size):
