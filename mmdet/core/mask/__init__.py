@@ -4,5 +4,5 @@ from .utils import encode_mask_results, split_combined_polys
 
 __all__ = [
     'split_combined_polys', 'mask_target', 'BaseInstanceMasks', 'BitmapMasks',
-    'PolygonMasks', 'encode_mask_results'
+    'PolygonMasks', 'encode_mask_results', 'raw_mask_results'
 ]
