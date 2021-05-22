@@ -236,9 +236,11 @@ class CocoDataset(CustomDataset):
         """Convert instance segmentation results to COCO json style."""
         bbox_json_results = []
         segm_json_results = []
+        seg_results = []
         for idx in range(len(self)):
             img_id = self.img_ids[idx]
             det, seg = results[idx]
+            seg_results.append(seg)
             for label in range(len(det)):
                 # bbox results
                 bboxes = det[label]
@@ -264,11 +266,16 @@ class CocoDataset(CustomDataset):
                     data['bbox'] = self.xyxy2xywh(bboxes[i])
                     data['score'] = float(mask_score[i])
                     data['category_id'] = self.cat_ids[label]
-                    if isinstance(segms[i]['counts'], bytes):
-                        segms[i]['counts'] = segms[i]['counts'].decode()
-                    data['segmentation'] = segms[i]
+                    try:
+                      if isinstance(segms[i]['counts'], bytes):
+                          segms[i]['counts'] = segms[i]['counts'].decode()
+                          data['segmentation'] = segms[i]
+                    except:
+                      pass         
+                    
                     segm_json_results.append(data)
-        return bbox_json_results, segm_json_results
+            #np.savez_compressed(img_id, )
+        return bbox_json_results, segm_json_results, seg_results
 
     def results2json(self, results, outfile_prefix):
         """Dump the detection results to a COCO style json file.
@@ -302,6 +309,7 @@ class CocoDataset(CustomDataset):
             result_files['segm'] = f'{outfile_prefix}.segm.json'
             mmcv.dump(json_results[0], result_files['bbox'])
             mmcv.dump(json_results[1], result_files['segm'])
+            np.savez_compressed(f"{outfile_prefix}_seg", json_results[2])
         elif isinstance(results[0], np.ndarray):
             json_results = self._proposal2json(results)
             result_files['proposal'] = f'{outfile_prefix}.proposal.json'
