@@ -40,6 +40,7 @@ def parse_args():
         help='evaluation metrics, which depends on the dataset, e.g., "bbox",'
         ' "segm", "proposal" for COCO, and "mAP", "recall" for PASCAL VOC')
     parser.add_argument('--show', action='store_true', help='show results')
+    parser.add_argument('--logits', action='store_true', help='get logits mask')
     parser.add_argument(
         '--show-dir', help='directory where painted images will be saved')
     parser.add_argument(
@@ -187,7 +188,7 @@ def main():
     if not distributed:
         model = MMDataParallel(model, device_ids=[0])
         outputs = single_gpu_test(model, data_loader, args.show, args.show_dir,
-                                  args.show_score_thr)
+                                  args.show_score_thr, args.logits)
     else:
         model = MMDistributedDataParallel(
             model.cuda(),
