@@ -82,7 +82,7 @@ def raw_mask_results(mask_results):
     for i in range(len(cls_segms)):
         for cls_segm in cls_segms[i]:
             encoded_mask_results[i].append(
-                    np.array(cls_segm[:, :, np.newaxis], dtype='uint8')[0])
+                    np.array(cls_segm[:, :, np.newaxis], dtype='uint8'))
     if isinstance(mask_results, tuple):
         return encoded_mask_results, cls_mask_scores
     else:
