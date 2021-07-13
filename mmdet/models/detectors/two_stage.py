@@ -65,7 +65,10 @@ class TwoStageDetector(BaseDetector):
                 Defaults to None.
         """
         super(TwoStageDetector, self).init_weights(pretrained)
-        self.backbone.init_weights(pretrained=pretrained)
+        try:
+            self.backbone.init_weights(pretrained=pretrained)
+        except:
+            pass
         if self.with_neck:
             if isinstance(self.neck, nn.Sequential):
                 for m in self.neck:
